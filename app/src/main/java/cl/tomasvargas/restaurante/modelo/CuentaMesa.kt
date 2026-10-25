@@ -1,39 +1,32 @@
 package cl.tomasvargas.restaurante.modelo
 
+// Clase que administra los ítems consumidos en la mesa y los totales a pagar
 class CuentaMesa(val mesa: Int = 1) {
     private val _items: MutableList<ItemMesa> = mutableListOf()
-    val items: List<ItemMesa> get() = _items
-
     var aceptaPropina: Boolean = true
 
-    fun agregarItem(item: ItemMesa) {
-        _items.add(item)
+    // Agrega un objeto ItemMesa directamente a la lista
+    fun agregarItem(itemMesa: ItemMesa) {
+        _items.add(itemMesa)
     }
 
+    // Crea y agrega un ItemMesa a partir de un ItemMenu y su cantidad
     fun agregarItem(itemMenu: ItemMenu, cantidad: Int) {
         _items.add(ItemMesa(itemMenu, cantidad))
     }
 
-    fun calcularSubtotal(): Int {
+    // Suma los subtotales de todos los platillos almacenados en la lista
+    fun calcularTotalSinPropina(): Int {
         return _items.sumOf { it.calcularSubtotal() }
     }
 
-    fun calcularTotalComida(): Int {
-        return calcularSubtotal()
-    }
-
+    // Calcula el 10% de propina si aceptaPropina es verdadero
     fun calcularPropina(): Int {
-        return if (aceptaPropina) (calcularTotalComida() * 0.10).toInt() else 0
+        return if (aceptaPropina) (calcularTotalSinPropina() * 0.10).toInt() else 0
     }
 
+    // Reutiliza las funciones anteriores para obtener el monto final
     fun calcularTotalConPropina(): Int {
-        return calcularTotalComida() + calcularPropina()
-    }
-
-    /**
-     * Limpia todos los ítems de la cuenta de la mesa.
-     */
-    fun limpiarItems() {
-        _items.clear()
+        return calcularTotalSinPropina() + calcularPropina()
     }
 }
